@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -15,5 +16,12 @@ namespace WebSchool.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public string FirtsName { get; set; }
+        public string LastName { get; set; }
+        public string Phone { get; set; }
+
+        public DateTime BirthDay { get; set; }
+
     }
 }

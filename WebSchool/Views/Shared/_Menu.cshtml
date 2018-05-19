@@ -1,0 +1,41 @@
+﻿@using WebSchool.Models
+@model List<T_Menu>
+
+<ul class="sidebar-menu" data-widget="tree">
+    <li class="header">Opciones</li>
+
+    @{
+
+        foreach (var item in Model)
+        {
+            <li class="active treeview">
+                <a href="#">
+                    <i class="@item.MenuIcon"></i> <span>@item.DisplayName</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                @if (item.SubMenu.Count > 0)
+                {
+                    <ul class="treeview-menu">
+                        @foreach (var subItem in item.SubMenu)
+                        {
+                            <li class="active">
+                                <a href="@Url.Content(subItem.MenuURL)">
+                                    <i class="@subItem.MenuIcon"></i>
+                                    @subItem.DisplayName
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+
+                }
+
+            </li>
+        }
+
+    }
+
+
+</ul>

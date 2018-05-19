@@ -35,4 +35,19 @@ namespace WebSchool.Models
         }
     }
 
+    public class T_Menu_Map : EntityTypeConfiguration<T_Menu>
+    {
+        public T_Menu_Map()
+        {
+            ToTable("T_Menu", "dbo");
+        }
+    }
+
+    public class T_Permission_Map : EntityTypeConfiguration<T_Permission>
+    {
+        public T_Permission_Map()
+        {
+            ToTable("T_Permission", "dbo");
+        }
+    }
 }
