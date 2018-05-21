@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Web;
+using WebSchool.Infraestructure.Entities;
 
-namespace WebSchool.Models
+namespace WebSchool.Infraestructure
 {
     public class T_Course_Map : EntityTypeConfiguration<T_Course>
     {

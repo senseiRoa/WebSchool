@@ -6,19 +6,17 @@ using System.Web;
 
 namespace WebSchool.Models
 {
-    public class T_School : BaseEntity
+    public class CourseViewModel
     {
-        [Key]
-        public Guid SchoolID { get; set; }
+       
+        public Guid CourseID { get; set; }
 
-        [Required]
-        [StringLength(250)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Nombre")]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(25)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Código")]
         public string Code { get; set; }
-
-       
     }
 }

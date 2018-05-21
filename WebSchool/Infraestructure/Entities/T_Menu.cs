@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace WebSchool.Models
+namespace WebSchool.Infraestructure.Entities
 {
     public class T_Menu : BaseEntity
     {

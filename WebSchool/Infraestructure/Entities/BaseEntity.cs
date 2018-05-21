@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebSchool.Models
+namespace WebSchool.Infraestructure
 {
     public abstract class BaseEntity
     {

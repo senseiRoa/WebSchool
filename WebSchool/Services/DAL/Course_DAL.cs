@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using WebSchool.Infraestructure;
+using WebSchool.Infraestructure.Entities;
 using WebSchool.Models;
 
 namespace WebSchool.Services.DAL
@@ -10,13 +11,19 @@ namespace WebSchool.Services.DAL
     {
         private ApplicationDbContext dataContext;
 
-        public List<T_Course> Courses(string userID)
+        public List<CourseViewModel> list()
         {
             try
             {
                 using (dataContext = new ApplicationDbContext())
                 {
-                    var courses = dataContext.Set<T_Course>().ToList();
+                    var courses = (from c in dataContext.Set<T_Course>()
+                                   select new CourseViewModel
+                                   {
+                                       CourseID = c.CourseID,
+                                       Code = c.Code,
+                                       Name = c.Name
+                                   }).ToList();
                     return courses;
                 }
             }
@@ -24,8 +31,9 @@ namespace WebSchool.Services.DAL
             {
                 //TODO: guardar en api log
             }
-            return null;
+            return new List<CourseViewModel>();
         }
+
         public T_Course Add(T_Course course)
         {
             try
@@ -33,7 +41,7 @@ namespace WebSchool.Services.DAL
                 using (dataContext = new ApplicationDbContext())
                 {
                     dataContext.Set<T_Course>().Add(course);
-                    dataContext.SaveChangesAsync();
+                    dataContext.SaveChanges();
                     return course;
                 }
             }
@@ -43,6 +51,7 @@ namespace WebSchool.Services.DAL
             }
             return null;
         }
+
         public T_InstanceOfCourse AddClassTeacher(T_InstanceOfCourse instanceOfCourse)
         {
             try
@@ -50,7 +59,7 @@ namespace WebSchool.Services.DAL
                 using (dataContext = new ApplicationDbContext())
                 {
                     dataContext.Set<T_InstanceOfCourse>().Add(instanceOfCourse);
-                    dataContext.SaveChangesAsync();
+                    dataContext.SaveChanges();
                     return instanceOfCourse;
                 }
             }
@@ -59,17 +68,28 @@ namespace WebSchool.Services.DAL
                 //TODO: guardar en api log
                 throw;
             }
-            
         }
 
-       
-        public List<T_InstanceOfCourse> InstanceOfCourses(string teacherID)
+        public List<InstanceOfCourseViewModel> InstanceOfCourses(string teacherID)
         {
             try
             {
                 using (dataContext = new ApplicationDbContext())
                 {
-                    var instances = dataContext.Set<T_InstanceOfCourse>().Where(i=>i.TeacherID.Equals(teacherID) && !i.LogicalErasure).ToList();
+                    var instances = (from i in dataContext.Set<T_InstanceOfCourse>()
+                                     where i.TeacherID.Equals(teacherID) && !i.LogicalErasure
+                                     select new InstanceOfCourseViewModel
+                                     {
+                                         CourseID = i.CourseID.ToString(),
+                                         CourseName = i.Course.Name,
+                                         TeacherID = i.TeacherID,
+                                         teacherName = i.Teacher.FirtsName +" "+i.Teacher.LastName,
+                                         Date = i.Date,
+                                         FinalTime = i.FinalTime.ToString(),
+                                         StartTime = i.StartTime.ToString(),
+                                         InstanceOfCourseID = i.InstanceOfCourseID
+                                     }
+                                     ).ToList();
                     return instances;
                 }
             }
@@ -77,9 +97,38 @@ namespace WebSchool.Services.DAL
             {
                 //TODO: guardar en api log
             }
-            return null;
+            return new List<InstanceOfCourseViewModel>(); ;
         }
 
+        public List<InstanceOfCourseViewModel> InstanceOfCourses()
+        {
+            try
+            {
+                using (dataContext = new ApplicationDbContext())
+                {
+                    var instances = (from i in dataContext.Set<T_InstanceOfCourse>()
+                                     where !i.LogicalErasure
+                                     select new InstanceOfCourseViewModel
+                                     {
+                                         CourseID = i.CourseID.ToString(),
+                                         CourseName = i.Course.Name,
+                                         TeacherID = i.TeacherID,
+                                         teacherName = i.Teacher.FirtsName + " " + i.Teacher.LastName,
+                                         Date = i.Date,
+                                         FinalTime = i.FinalTime.ToString(),
+                                         StartTime = i.StartTime.ToString(),
+                                         InstanceOfCourseID = i.InstanceOfCourseID
+                                     }
+                                     ).ToList();
+                    return instances;
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: guardar en api log
+            }
+            return new List<InstanceOfCourseViewModel>();
+        }
 
         public T_InscriptionStudent AddInscription(T_InscriptionStudent inscriptionStudent)
         {
@@ -88,7 +137,7 @@ namespace WebSchool.Services.DAL
                 using (dataContext = new ApplicationDbContext())
                 {
                     dataContext.Set<T_InscriptionStudent>().Add(inscriptionStudent);
-                    dataContext.SaveChangesAsync();
+                    dataContext.SaveChanges();
                     return inscriptionStudent;
                 }
             }
@@ -97,16 +146,36 @@ namespace WebSchool.Services.DAL
                 //TODO: guardar en api log
                 throw;
             }
-
         }
 
-        public List<T_InscriptionStudent> InscriptionStudent(string studentID)
+        public List<InscriptionStudentViewModel> InscriptionStudent(string studentID)
         {
             try
             {
                 using (dataContext = new ApplicationDbContext())
                 {
-                    var instances = dataContext.Set<T_InscriptionStudent>().Where(i => i.StudentID.Equals(studentID) && !i.LogicalErasure).ToList();
+                    var instances = (from i in dataContext.Set<T_InscriptionStudent>()
+                                     where i.StudentID.Equals(studentID) && !i.LogicalErasure
+                                     select new InscriptionStudentViewModel
+                                     {
+                                         InscriptionStudentID = i.InscriptionStudentID,
+                                         Assistance = i.Assistance,
+                                         Observation = i.Observation,
+                                         InstanceOfCourse = new InstanceOfCourseViewModel
+                                         {
+                                             CourseID = i.InstanceOfCourse.CourseID.ToString(),
+                                             CourseName = i.InstanceOfCourse.Course.Name,
+                                             TeacherID = i.InstanceOfCourse.TeacherID,
+                                             teacherName = i.InstanceOfCourse.Teacher.FirtsName+" "+ i.InstanceOfCourse.Teacher.LastName,
+                                             Date = i.InstanceOfCourse.Date,
+                                             FinalTime = i.InstanceOfCourse.FinalTime.ToString(),
+                                             StartTime = i.InstanceOfCourse.StartTime.ToString(),
+                                             InstanceOfCourseID = i.InstanceOfCourse.InstanceOfCourseID
+                                         }
+
+                                     }
+
+                        ).ToList();
                     return instances;
                 }
             }
@@ -114,7 +183,7 @@ namespace WebSchool.Services.DAL
             {
                 //TODO: guardar en api log
             }
-            return null;
+            return new List<InscriptionStudentViewModel>();
         }
     }
 }

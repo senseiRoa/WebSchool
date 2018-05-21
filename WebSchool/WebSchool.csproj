@@ -196,32 +196,32 @@
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\StudentController.cs" />
-    <Compile Include="Controllers\TeacherController.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201805190044002_FirtsMigration.cs" />
-    <Compile Include="Migrations\201805190044002_FirtsMigration.Designer.cs">
-      <DependentUpon>201805190044002_FirtsMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201805190434233_Add-Menu.cs" />
-    <Compile Include="Migrations\201805190434233_Add-Menu.Designer.cs">
-      <DependentUpon>201805190434233_Add-Menu.cs</DependentUpon>
+    <Compile Include="Infraestructure\Entities\T_Course.cs" />
+    <Compile Include="Infraestructure\Entities\T_InscriptionStudent.cs" />
+    <Compile Include="Infraestructure\Entities\T_InstanceOfCourse.cs" />
+    <Compile Include="Infraestructure\Entities\T_Menu.cs" />
+    <Compile Include="Infraestructure\Entities\T_Permission.cs" />
+    <Compile Include="Infraestructure\Entities\T_School.cs" />
+    <Compile Include="Infraestructure\EntityMaps.cs" />
+    <Compile Include="Migrations\201805211128324_firtsMigration.cs" />
+    <Compile Include="Migrations\201805211128324_firtsMigration.Designer.cs">
+      <DependentUpon>201805211128324_firtsMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\ApplicationDbContext.cs" />
-    <Compile Include="Models\BaseEntity.cs" />
-    <Compile Include="Models\EntityMaps.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Infraestructure\ApplicationDbContext.cs" />
+    <Compile Include="Infraestructure\Entities\BaseEntity.cs" />
+    <Compile Include="Models\CourseViewModel.cs" />
+    <Compile Include="Models\IdentityUserModel.cs" />
+    <Compile Include="Models\InscriptionStudentViewModel.cs" />
+    <Compile Include="Models\InstanceOfCourseViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\T_Course.cs" />
-    <Compile Include="Models\T_InscriptionStudent.cs" />
-    <Compile Include="Models\T_InstanceOfCourse.cs" />
-    <Compile Include="Models\T_Permission.cs" />
-    <Compile Include="Models\T_Menu.cs" />
-    <Compile Include="Models\T_School.cs" />
+    <Compile Include="Models\PersonViewModel.cs" />
+    <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DAL\Course_DAL.cs" />
     <Compile Include="Services\DAL\Menu_DAL.cs" />
@@ -7277,11 +7277,17 @@
     <Content Include="Views\Shared\_Menu.cshtml" />
     <Content Include="Views\Shared\_Account.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Course\Add.cshtml" />
+    <Content Include="Views\Course\List.cshtml" />
+    <Content Include="Views\Course\addClass.cshtml" />
+    <Content Include="Views\Course\Courses.cshtml" />
+    <Content Include="Views\Course\Program.cshtml" />
+    <Content Include="Views\Course\ProgramList.cshtml" />
+    <Content Include="Views\Person\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
-    <Folder Include="Views\Course\" />
     <Folder Include="Views\Student\" />
     <Folder Include="Views\Teacher\" />
   </ItemGroup>
@@ -7299,18 +7305,15 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201805190044002_FirtsMigration.resx">
-      <DependentUpon>201805190044002_FirtsMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201805190434233_Add-Menu.resx">
-      <DependentUpon>201805190434233_Add-Menu.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <TypeScriptCompile Include="Content\moment\moment.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201805211128324_firtsMigration.resx">
+      <DependentUpon>201805211128324_firtsMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

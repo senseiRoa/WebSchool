@@ -4,10 +4,11 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration;
 using System.Linq;
 using System.Reflection;
+using WebSchool.Models;
 
-namespace WebSchool.Models
+namespace WebSchool.Infraestructure
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUserModel>
     {
         public ApplicationDbContext()
             : base("DBContext", throwIfV1Schema: false)
@@ -37,5 +38,7 @@ namespace WebSchool.Models
             }
             base.OnModelCreating(modelBuilder);
         }
+
+        
     }
 }

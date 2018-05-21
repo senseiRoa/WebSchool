@@ -7,13 +7,13 @@ namespace WebSchool.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class FirtsMigration : IMigrationMetadata
+    public sealed partial class firtsMigration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(FirtsMigration));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(firtsMigration));
         
         string IMigrationMetadata.Id
         {
-            get { return "201805190044002_FirtsMigration"; }
+            get { return "201805211128324_firtsMigration"; }
         }
         
         string IMigrationMetadata.Source

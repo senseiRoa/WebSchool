@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
-using WebSchool.Models;
+using WebSchool.Infraestructure;
+using WebSchool.Infraestructure.Entities;
 
 namespace WebSchool.Services.DAL
 {

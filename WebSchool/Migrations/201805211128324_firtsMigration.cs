@@ -3,7 +3,7 @@ namespace WebSchool.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class FirtsMigration : DbMigration
+    public partial class firtsMigration : DbMigration
     {
         public override void Up()
         {
@@ -35,6 +35,10 @@ namespace WebSchool.Migrations
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
+                        FirtsName = c.String(),
+                        LastName = c.String(),
+                        Phone = c.String(),
+                        BirthDay = c.DateTime(nullable: false),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
@@ -95,7 +99,7 @@ namespace WebSchool.Migrations
                     {
                         InscriptionStudentID = c.Guid(nullable: false),
                         StudentID = c.String(maxLength: 128),
-                        Observation = c.String(nullable: false, maxLength: 500),
+                        Observation = c.String(maxLength: 500),
                         Assistance = c.Boolean(nullable: false),
                         InstanceOfCourseID = c.Guid(nullable: false),
                         CreateDate = c.DateTime(nullable: false),
@@ -106,8 +110,7 @@ namespace WebSchool.Migrations
                 .PrimaryKey(t => t.InscriptionStudentID)
                 .ForeignKey("dbo.T_InstanceOfCourse", t => t.InstanceOfCourseID, cascadeDelete: true)
                 .ForeignKey("dbo.AspNetUsers", t => t.StudentID)
-                .Index(t => t.StudentID)
-                .Index(t => t.InstanceOfCourseID);
+                .Index(t => new { t.StudentID, t.InstanceOfCourseID }, unique: true, name: "IX_one");
             
             CreateTable(
                 "dbo.T_InstanceOfCourse",
@@ -118,14 +121,17 @@ namespace WebSchool.Migrations
                         StartTime = c.Time(nullable: false, precision: 7),
                         FinalTime = c.Time(nullable: false, precision: 7),
                         TeacherID = c.String(maxLength: 128),
+                        CourseID = c.Guid(nullable: false),
                         CreateDate = c.DateTime(nullable: false),
                         ModificationDate = c.DateTime(nullable: false),
                         EraseDate = c.DateTime(),
                         LogicalErasure = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.InstanceOfCourseID)
+                .ForeignKey("dbo.T_Course", t => t.CourseID, cascadeDelete: true)
                 .ForeignKey("dbo.AspNetUsers", t => t.TeacherID)
-                .Index(t => new { t.Date, t.StartTime, t.FinalTime, t.TeacherID }, unique: true, name: "IX_OnlySchedulePerTeacher");
+                .Index(t => new { t.Date, t.StartTime, t.FinalTime, t.TeacherID }, unique: true, name: "IX_OnlySchedulePerTeacher")
+                .Index(t => t.CourseID);
             
             CreateTable(
                 "dbo.T_School",
@@ -141,26 +147,69 @@ namespace WebSchool.Migrations
                     })
                 .PrimaryKey(t => t.SchoolID);
             
+            CreateTable(
+                "dbo.T_Menu",
+                c => new
+                    {
+                        MenuID = c.Int(nullable: false, identity: true),
+                        DisplayName = c.String(nullable: false, maxLength: 50),
+                        ParentMenuID = c.Int(nullable: false),
+                        OrderNumber = c.Int(nullable: false),
+                        MenuURL = c.String(maxLength: 100),
+                        MenuIcon = c.String(maxLength: 25),
+                        CreateDate = c.DateTime(nullable: false),
+                        ModificationDate = c.DateTime(nullable: false),
+                        EraseDate = c.DateTime(),
+                        LogicalErasure = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.MenuID);
+            
+            CreateTable(
+                "dbo.T_Permission",
+                c => new
+                    {
+                        PermissionID = c.Guid(nullable: false),
+                        RoleID = c.String(nullable: false, maxLength: 128),
+                        MenuID = c.Int(nullable: false),
+                        Action = c.String(),
+                        CreateDate = c.DateTime(nullable: false),
+                        ModificationDate = c.DateTime(nullable: false),
+                        EraseDate = c.DateTime(),
+                        LogicalErasure = c.Boolean(nullable: false),
+                    })
+                .PrimaryKey(t => t.PermissionID)
+                .ForeignKey("dbo.AspNetRoles", t => t.RoleID, cascadeDelete: true)
+                .ForeignKey("dbo.T_Menu", t => t.MenuID, cascadeDelete: true)
+                .Index(t => t.RoleID)
+                .Index(t => t.MenuID);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.T_Permission", "MenuID", "dbo.T_Menu");
+            DropForeignKey("dbo.T_Permission", "RoleID", "dbo.AspNetRoles");
             DropForeignKey("dbo.T_InscriptionStudent", "StudentID", "dbo.AspNetUsers");
             DropForeignKey("dbo.T_InscriptionStudent", "InstanceOfCourseID", "dbo.T_InstanceOfCourse");
             DropForeignKey("dbo.T_InstanceOfCourse", "TeacherID", "dbo.AspNetUsers");
+            DropForeignKey("dbo.T_InstanceOfCourse", "CourseID", "dbo.T_Course");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropIndex("dbo.T_Permission", new[] { "MenuID" });
+            DropIndex("dbo.T_Permission", new[] { "RoleID" });
+            DropIndex("dbo.T_InstanceOfCourse", new[] { "CourseID" });
             DropIndex("dbo.T_InstanceOfCourse", "IX_OnlySchedulePerTeacher");
-            DropIndex("dbo.T_InscriptionStudent", new[] { "InstanceOfCourseID" });
-            DropIndex("dbo.T_InscriptionStudent", new[] { "StudentID" });
+            DropIndex("dbo.T_InscriptionStudent", "IX_one");
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropTable("dbo.T_Permission");
+            DropTable("dbo.T_Menu");
             DropTable("dbo.T_School");
             DropTable("dbo.T_InstanceOfCourse");
             DropTable("dbo.T_InscriptionStudent");

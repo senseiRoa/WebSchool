@@ -108,7 +108,7 @@ namespace WebSchool.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         public ActionResult Register()
         {
             return View();
@@ -117,23 +117,18 @@ namespace WebSchool.Controllers
         //
         // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Administrador")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUserModel { UserName = model.Email, Email = model.Email ,FirtsName=model.FirtsName,LastName=model.LastName,BirthDay=DateTime.Now};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    UserManager.AddToRoles(user.Id, new string[] { roleName(model.roleId) });
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -142,7 +137,16 @@ namespace WebSchool.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+
+            string roleName(string id) {
+                if (RoleViewModel.Estudiante.RoleID.Equals(id))
+                {
+                    return RoleViewModel.Estudiante.Name;
+                }
+                return RoleViewModel.Profesor.Name;
+            }
         }
+        
 
         //
         // GET: /Account/ConfirmEmail
@@ -339,7 +343,7 @@ namespace WebSchool.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUserModel { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -359,8 +363,8 @@ namespace WebSchool.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        
+        
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);

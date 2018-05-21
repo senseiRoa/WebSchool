@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebSchool.Models;
 
-namespace WebSchool.Models
+namespace WebSchool.Infraestructure.Entities
 {
     public class T_InstanceOfCourse : BaseEntity
     {
@@ -29,7 +30,11 @@ namespace WebSchool.Models
         public string TeacherID { get; set; }
 
         [ForeignKey("TeacherID")]
-        public virtual ApplicationUser Teacher { get; set; }
+        public virtual IdentityUserModel Teacher { get; set; }
 
+        public Guid CourseID { get; set; }
+
+        [ForeignKey("CourseID")]
+        public virtual T_Course Course { get; set; }
     }
 }
